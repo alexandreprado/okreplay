@@ -41,6 +41,7 @@ public class OkReplayConfig {
   private final MatchRule defaultMatchRule;
   private final boolean sslEnabled;
   private final OkReplayInterceptor interceptor;
+  private final ResponseFilter responseFilter;
 
   protected OkReplayConfig(Builder builder) {
     this.tapeRoot = builder.tapeRoot;
@@ -50,6 +51,7 @@ public class OkReplayConfig {
     this.ignoreLocalhost = builder.ignoreLocalhost;
     this.sslEnabled = builder.sslEnabled;
     this.interceptor = builder.interceptor;
+    this.responseFilter = builder.responseFilter;
   }
 
   /**
@@ -100,6 +102,8 @@ public class OkReplayConfig {
     return interceptor;
   }
 
+  public ResponseFilter responseFilter() { return responseFilter; }
+
   /**
    * If set to true add support for proxying SSL (disable certificate
    * checking).
@@ -125,6 +129,12 @@ public class OkReplayConfig {
     boolean ignoreLocalhost;
     boolean sslEnabled;
     OkReplayInterceptor interceptor;
+    ResponseFilter responseFilter = new ResponseFilter() {
+      @Override
+      public boolean filter(Request result, Response response) {
+        return true;
+      }
+    };
 
     public Builder() {
       try {
@@ -216,8 +226,17 @@ public class OkReplayConfig {
       return this;
     }
 
+    public Builder responseFilter(ResponseFilter responseFilter) {
+      this.responseFilter = responseFilter;
+      return this;
+    }
+
     public OkReplayConfig build() {
       return new OkReplayConfig(this);
     }
+  }
+
+  interface ResponseFilter {
+    boolean filter(Request result, Response response);
   }
 }
