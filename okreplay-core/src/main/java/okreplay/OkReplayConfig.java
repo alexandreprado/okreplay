@@ -102,7 +102,7 @@ public class OkReplayConfig {
     return interceptor;
   }
 
-  public ResponseFilter responseFilter() { return responseFilter; }
+  public ResponseFilter getResponseFilter() { return responseFilter; }
 
   /**
    * If set to true add support for proxying SSL (disable certificate
@@ -236,7 +236,7 @@ public class OkReplayConfig {
     }
   }
 
-  interface ResponseFilter {
-    boolean filter(Request result, Response response);
+  public interface ResponseFilter {
+    boolean filter(Request request, Response response);
   }
 }
